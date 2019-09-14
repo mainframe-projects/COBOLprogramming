@@ -136,7 +136,7 @@
                LINE 13  COLUMN 26  PIC X(02)
                USING  UF
                HIGHLIGHT.
-            05  TUFX
+            05 TUFX
                LINE 13  COLUMN 29  PIC X(20)
                USING  XUF
                HIGHLIGHT.
@@ -264,6 +264,40 @@
                                                        TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO ROT-FIM.
+       LER-XUF.
+                MOVE 0 TO W-SEL
+                READ XUF
+                IF XUF NOT = "00"
+                   IF XUF = "SP"
+                      DISPLAY TELACEP
+                      MOVE "*** SÃO PAULO ***" TO MENS
+                      PERFORM ROT-MENS THRU ROT-MENS-FIM
+                      MOVE 1 TO W-SEL
+                      GO TO ACE-001
+                   IF XUF = "AC"
+                      DISPLAY TELACEP
+                      MOVE "*** ACRE ***" TO MENS
+                      PERFORM ROT-MENS THRU ROT-MENS-FIM
+                      MOVE 1 TO W-SEL
+                      GO TO ACE-001
+                   IF XUF = "RJ"
+                      DISPLAY TELACEP
+                      MOVE "*** RIO DE JANEIRO ***" TO MENS
+                      PERFORM ROT-MENS THRU ROT-MENS-FIM
+                      MOVE 1 TO W-SEL
+                      GO TO ACE-001
+                   IF XUF = "ES"
+                      DISPLAY TELACEP
+                      MOVE "*** ESPÍRITO SANTO ***" TO MENS
+                      PERFORM ROT-MENS THRU ROT-MENS-FIM
+                      MOVE 1 TO W-SEL
+                      GO TO ACE-001
+                   ELSE
+                      MOVE "ERRO NA LEITURA ARQ. PRODUTO"   TO MENS
+                      PERFORM ROT-MENS THRU ROT-MENS-FIM
+                      GO TO ROT-FIM
+                ELSE
+                   NEXT SENTENCE.
       *
       *****************************************
       * ROTINA DE CONSULTA/ALTERACAO/EXCLUSAO *
@@ -329,8 +363,8 @@
                 GO TO ROT-FIM.
         DISPLAY (23, 40) "...".
                 ACCEPT (23, 57) W-OPCAO
-                IF W-OPCAO = "0" OR "þ"
-                   MOVE "*** CARACTERES NÃO ACEITOS ***" TO MENS
+                IF W-OPCAO = "0" OR "Þ"
+                   MOVE "*** CARACTERES NAO ACEITOS ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO INC-001.
       *
