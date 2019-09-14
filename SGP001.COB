@@ -267,7 +267,6 @@
        LER-XUF.
                 MOVE 0 TO W-SEL
                 READ XUF
-                IF XUF NOT = "00"
                    IF XUF = "SP"
                       DISPLAY TELACEP
                       MOVE "*** SÃO PAULO ***" TO MENS
@@ -293,10 +292,9 @@
                       MOVE 1 TO W-SEL
                       GO TO ACE-001
                    ELSE
-                      MOVE "ERRO NA LEITURA ARQ. PRODUTO"   TO MENS
+                      MOVE "ERRO NA LEITURA DO ESTADO BRASILEIRO"   TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO ROT-FIM
-                ELSE
                    NEXT SENTENCE.
       *
       *****************************************
