@@ -1,14 +1,11 @@
-      *************DOCUMENTACAO*****************************************
       ******************************************************************
       * Author: LÁZARO V.A. SANTOS
-      * Date:09-14-2019
-      * Purpose: Treinanmento de COBOL
+      * Date: 14-09-2019
+      * Purpose: Sistema de pastelaria
       * Tectonics: cobc
       ******************************************************************
-      *********************************FIM***DOCUMENTACAO***************
-
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. PROG0001.
+       PROGRAM-ID. SGP001.
        DATA DIVISION.
        FILE SECTION.
        WORKING-STORAGE SECTION.
@@ -16,4 +13,4 @@
        MAIN-PROCEDURE.
             DISPLAY "Hello world"
             STOP RUN.
-       END PROGRAM YOUR-PROGRAM-NAME.
+       END PROGRAM SGP001.
