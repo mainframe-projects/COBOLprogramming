@@ -26,13 +26,13 @@
                VALUE OF FILE-ID IS "CEPCLIENTE.DAT".
                01 REGCEP.
                03 CODIGO.
-                   05 CODIGO-CEP     PIC 9(08).
-                03 LOGRADOURO        PIC X(40).
-                03 BAIRRO            PIC X(20).
+               05 CODIGO-CEP        PIC 9(08).
+               03 LOGRADOURO        PIC X(40).
+               03 BAIRRO            PIC X(20).
 
 
-                03 CIDADE            PIC X(20).
-                03 UF                PIC X(02).
+               03 CIDADE            PIC X(20).
+               03 UF                PIC X(02).
 
       *
       *-----------------------------------------------------------------
@@ -142,17 +142,50 @@
                HIGHLIGHT.
       *-----------------------------------------------------------------
         WORKING-STORAGE SECTION.
+
+       01 IND PIC9(02) VALUE ZEROS.
+
+       01 TB.
+                   03 TB1 PIC X(54) VALUE "ACAMROSPRJBASCMTMGRSESCEAL".
+       01 TABUF REDEFINES TB.
+                   03 TABUFX PIC X(02) OCCURS 27 TIMES.
        01 MASC1        PIC ZZZ.ZZ9,99.
        01 MASC2           PIC ZZZZ.ZZZ.ZZ9,99.
        77 W-SEL        PIC 9(01) VALUE ZEROS.
        77 W-CONT       PIC 9(06) VALUE ZEROS.
        77 W-OPCAO      PIC X(01) VALUE SPACES.
+       77 CODIGO-CEP   PIC 9(08) VALUE SPACES.
        77 ST-ERRO      PIC X(02) VALUE "00".
        77 W-ACT        PIC 9(02) VALUE ZEROS.
        77 MENS         PIC X(50) VALUE SPACES.
        77 LIMPA        PIC X(50) VALUE SPACES.
        77 XUF          PIC X(50) VALUE ZEROS.
-      *-----------------------------------------------------------------
+      *----------------------------------------------------------------*
+       01 TBE.
+
+       03 TBE1 PIC X(20) VALUE "SÃO PAULO".
+       03 TBE2 PIC X(20) VALUE "RIO DE JANEIRO".
+       03 TBE3 PIC X(20) VALUE "ESPIRITO SANTO".
+       03 TBE4 PIC X(20) VALUE "ACRE".
+       03 TBE5 PIC X(20) VALUE "MINAS GERAIS".
+       03 TBE6 PIC X(20) VALUE "BAHIA".
+       03 TBE7 PIC X(20) VALUE "CEARÁ".
+       03 TBE8 PIC X(20) VALUE "ALAGOAS".
+       03 TBE9 PIC X(20) VALUE "SANTA CATARINA".
+       03 TBE10 PIC X(20) VALUE "BRASÍLIA"
+       03 TBE11 PIC X(20) VALUE "DISTRITO FEDERAL".
+       03 TBE12 PIC X(20) VALUE "MARANHÃO"
+       03 TBE13 PIC X(20) VALUE "PIAUÍ"
+       03 TBE14 PIC X(20) VALUE "AMAPÁ"
+       03 TBE15 PIC X(20) VALUE "RONDÔNIA"
+       03 TBE16 PIC X(20) VALUE "RORAIMA"
+       03 TBE17 PIC X(20) VALUE ""
+
+       01 TABUFE REDEFINES TBE.
+
+           03 TABUFE1 PIC(20) OCCURS 27 TIMES.
+
+      *----------------------------------------------------------------*
        PROCEDURE DIVISION.
        INICIO.
       *
@@ -215,11 +248,27 @@
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-004.
        INC-006.
+
+
+                ACCEPT TUF
+                ACCEPT
                 ACCEPT (08, 12) PRECMD
                 MOVE PRECMD TO MASC1
                 DISPLAY (08, 12)MASC1
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-005.
+       INC-006A.
+               MOVE 1 TO IND
+       INC-006B.
+               IF UF NOT = TABUF1(IND)
+                   IF IND < 27
+                       ADD 1 TO IND
+                       GO TO INC-006B
+                   ELSE
+                       MENSAGEM "UF INCORRETA."
+                       GO TO INC-006
+                   ELSE
+                       DISPLAY TELA.
        INC-007.
                 COMPUTE VRESTOQ = QUANT * PRECMD
                 DISPLAY (09, 21)VRESTOQ.
@@ -264,38 +313,38 @@
                                                        TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO ROT-FIM.
-       LER-XUF.
-                MOVE 0 TO W-SEL
-                READ XUF
-                   IF XUF = "SP"
-                      DISPLAY TELACEP
-                      MOVE "*** SÃO PAULO ***" TO MENS
-                      PERFORM ROT-MENS THRU ROT-MENS-FIM
-                      MOVE 1 TO W-SEL
-                      GO TO ACE-001
-                   IF XUF = "AC"
-                      DISPLAY TELACEP
-                      MOVE "*** ACRE ***" TO MENS
-                      PERFORM ROT-MENS THRU ROT-MENS-FIM
-                      MOVE 1 TO W-SEL
-                      GO TO ACE-001
-                   IF XUF = "RJ"
-                      DISPLAY TELACEP
-                      MOVE "*** RIO DE JANEIRO ***" TO MENS
-                      PERFORM ROT-MENS THRU ROT-MENS-FIM
-                      MOVE 1 TO W-SEL
-                      GO TO ACE-001
-                   IF XUF = "ES"
-                      DISPLAY TELACEP
-                      MOVE "*** ESPÍRITO SANTO ***" TO MENS
-                      PERFORM ROT-MENS THRU ROT-MENS-FIM
-                      MOVE 1 TO W-SEL
-                      GO TO ACE-001
-                   ELSE
-                      MOVE "ERRO NA LEITURA DO ESTADO BRASILEIRO"   TO MENS
-                      PERFORM ROT-MENS THRU ROT-MENS-FIM
-                      GO TO ROT-FIM
-                   NEXT SENTENCE.
+      * LER-XUF.
+      *          MOVE 0 TO W-SEL
+      *          READ XUF
+      *             IF XUF = "SP"
+      *                DISPLAY TELACEP
+      *                MOVE "*** SÃO PAULO ***" TO MENS
+      *                PERFORM ROT-MENS THRU ROT-MENS-FIM
+      *                MOVE 1 TO W-SEL
+      *                GO TO ACE-001
+      *             IF XUF = "AC"
+      *                DISPLAY TELACEP
+      *                MOVE "*** ACRE ***" TO MENS
+      *                PERFORM ROT-MENS THRU ROT-MENS-FIM
+      *                MOVE 1 TO W-SEL
+      *                GO TO ACE-001
+      *             IF XUF = "RJ"
+      *                DISPLAY TELACEP
+      *                MOVE "*** RIO DE JANEIRO ***" TO MENS
+      *                PERFORM ROT-MENS THRU ROT-MENS-FIM
+      *                MOVE 1 TO W-SEL
+      *                GO TO ACE-001
+      *             IF XUF = "ES"
+      *                DISPLAY TELACEP
+      *                MOVE "*** ESPÍRITO SANTO ***" TO MENS
+      *                PERFORM ROT-MENS THRU ROT-MENS-FIM
+      *                MOVE 1 TO W-SEL
+      *                GO TO ACE-001
+      *             ELSE
+      *             MOVE "ERRO NA LEITURA DO ESTADO BRASILEIRO"   TO MENS
+      *                PERFORM ROT-MENS THRU ROT-MENS-FIM
+      *                GO TO ROT-FIM
+      *             NEXT SENTENCE.
       *
       *****************************************
       * ROTINA DE CONSULTA/ALTERACAO/EXCLUSAO *
