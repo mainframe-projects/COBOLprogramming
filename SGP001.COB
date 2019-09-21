@@ -12,29 +12,73 @@
        CONFIGURATION SECTION.
         INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-       SELECT CADCEP ASSIGN TO DISK
+       SELECT CADCEP ASSIGN TO "CADCEP.DAT"
                     ORGANIZATION IS INDEXED
                     ACCESS MODE  IS DYNAMIC
                     RECORD KEY   IS CODIGO-CEP
                     FILE STATUS  IS ST-ERRO
-                    ALTERNATE RECORD KEY IS CADCODIGO-CEP
+                    ALTERNATE RECORD KEY IS LOGRADOURO
                                             WITH DUPLICATES.
 
        DATA DIVISION.
        FILE SECTION.
-       LABEL RECORD IS STANDARD
-               VALUE OF FILE-ID IS "CEPCLIENTE.DAT".
-               01 REGCEP.
-               03 CODIGO.
-               05 CODIGO-CEP        PIC 9(08).
+
+       FD CADCEP.
+
+       01 REGCEP.
+               03 CODIGO-CEP        PIC 9(08).
                03 LOGRADOURO        PIC X(40).
                03 BAIRRO            PIC X(20).
-
 
                03 CIDADE            PIC X(20).
                03 UF                PIC X(02).
 
       *
+       WORKING-STORAGE SECTION.
+
+
+
+       77 W-SEL        PIC 9(01) VALUE ZEROS.
+       77 W-CONT       PIC 9(06) VALUE ZEROS.
+       77 W-OPCAO      PIC X(01) VALUE SPACES.
+
+       77 ST-ERRO      PIC X(02) VALUE "00".
+       77 W-ACT        PIC 9(02) VALUE ZEROS.
+       77 MENS         PIC X(50) VALUE SPACES.
+       77 LIMPA        PIC X(50) VALUE SPACES.
+       01 XUF          PIC X(20) VALUE ZEROS.
+      *----------------------------------------------------------------*
+       01 IND PIC 9(02) VALUE ZEROS.
+
+       01 TB.
+       03 TB1 PIC X(54) VALUE "ACAMROSPRJBASCMTMGRSESCEAL".
+
+       01 TABUF REDEFINES TB.
+       03 TABUFX PIC X(02) OCCURS 27 TIMES.
+       01 TBE.
+                                1234567890123456789012345678901234567890
+       03 TBE1 PIC X(40) VALUE "SÃO PAULO           ACRE".
+       03 TBE2 PIC X(20) VALUE "RIO DE JANEIRO      CEARA".
+       03 TBE3 PIC X(20) VALUE "ESPIRITO SANTO      BAHIA".
+       03 TBE4 PIC X(20) VALUE "AMAZONAS".
+       03 TBE5 PIC X(20) VALUE "MINAS GERAIS".
+       03 TBE6 PIC X(20) VALUE "BAHIA".
+       03 TBE7 PIC X(20) VALUE "CEARÁ".
+       03 TBE8 PIC X(20) VALUE "ALAGOAS".
+       03 TBE9 PIC X(20) VALUE "SANTA CATARINA".
+       03 TBE10 PIC X(20) VALUE "BRASÍLIA".
+       03 TBE11 PIC X(20) VALUE "DISTRITO FEDERAL".
+       03 TBE12 PIC X(20) VALUE "MARANHÃO"
+       03 TBE13 PIC X(20) VALUE "PIAUÍ"
+       03 TBE14 PIC X(20) VALUE "AMAPÁ"
+       03 TBE15 PIC X(20) VALUE "RONDÔNIA"
+       03 TBE16 PIC X(20) VALUE "RORAIMA"
+       03 TBE17 PIC X(20) VALUE ""
+
+       01 TABUFE REDEFINES TBE.
+
+       03 TABUFE1 PIC(20) OCCURS 27 TIMES.
+
       *-----------------------------------------------------------------
        SCREEN SECTION.
        01  TELACEP.
@@ -141,49 +185,6 @@
                USING  XUF
                HIGHLIGHT.
       *-----------------------------------------------------------------
-        WORKING-STORAGE SECTION.
-
-       01 IND PIC9(02) VALUE ZEROS.
-
-       01 TB.
-                   03 TB1 PIC X(54) VALUE "ACAMROSPRJBASCMTMGRSESCEAL".
-       01 TABUF REDEFINES TB.
-                   03 TABUFX PIC X(02) OCCURS 27 TIMES.
-       01 MASC1        PIC ZZZ.ZZ9,99.
-       01 MASC2           PIC ZZZZ.ZZZ.ZZ9,99.
-       77 W-SEL        PIC 9(01) VALUE ZEROS.
-       77 W-CONT       PIC 9(06) VALUE ZEROS.
-       77 W-OPCAO      PIC X(01) VALUE SPACES.
-       77 CODIGO-CEP   PIC 9(08) VALUE SPACES.
-       77 ST-ERRO      PIC X(02) VALUE "00".
-       77 W-ACT        PIC 9(02) VALUE ZEROS.
-       77 MENS         PIC X(50) VALUE SPACES.
-       77 LIMPA        PIC X(50) VALUE SPACES.
-       77 XUF          PIC X(50) VALUE ZEROS.
-      *----------------------------------------------------------------*
-       01 TBE.
-
-       03 TBE1 PIC X(20) VALUE "SÃO PAULO".
-       03 TBE2 PIC X(20) VALUE "RIO DE JANEIRO".
-       03 TBE3 PIC X(20) VALUE "ESPIRITO SANTO".
-       03 TBE4 PIC X(20) VALUE "ACRE".
-       03 TBE5 PIC X(20) VALUE "MINAS GERAIS".
-       03 TBE6 PIC X(20) VALUE "BAHIA".
-       03 TBE7 PIC X(20) VALUE "CEARÁ".
-       03 TBE8 PIC X(20) VALUE "ALAGOAS".
-       03 TBE9 PIC X(20) VALUE "SANTA CATARINA".
-       03 TBE10 PIC X(20) VALUE "BRASÍLIA"
-       03 TBE11 PIC X(20) VALUE "DISTRITO FEDERAL".
-       03 TBE12 PIC X(20) VALUE "MARANHÃO"
-       03 TBE13 PIC X(20) VALUE "PIAUÍ"
-       03 TBE14 PIC X(20) VALUE "AMAPÁ"
-       03 TBE15 PIC X(20) VALUE "RONDÔNIA"
-       03 TBE16 PIC X(20) VALUE "RORAIMA"
-       03 TBE17 PIC X(20) VALUE ""
-
-       01 TABUFE REDEFINES TBE.
-
-           03 TABUFE1 PIC(20) OCCURS 27 TIMES.
 
       *----------------------------------------------------------------*
        PROCEDURE DIVISION.
@@ -277,12 +278,7 @@
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT= 02 GO TO INC-006.
        INC-009.
-                ACCEPT (11, 21) ALMOXARIFADO
-                ACCEPT W-ACT FROM ESCAPE KEY
-                IF W-ACT = 02 GO TO INC-008.
-      *
-                IF W-SEL = 1
-                              GO TO ALT-OPC.
+
 
        INC-OPC.
                 MOVE "S" TO W-OPCAO
@@ -298,21 +294,6 @@
                    MOVE "*** DIGITE APENAS S=SIM e N=NAO ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO INC-OPC.
-       INC-WR1.
-                WRITE REGPRO
-                IF ST-ERRO = "00" OR "02"
-                      MOVE "*** DADOS GRAVADOS *** " TO MENS
-                      PERFORM ROT-MENS THRU ROT-MENS-FIM
-                      GO TO INC-001.
-                IF ST-ERRO = "22"
-                      MOVE "*** PRODUTO JA EXISTE ***       " TO MENS
-                      PERFORM ROT-MENS THRU ROT-MENS-FIM
-                      GO TO INC-001
-                ELSE
-                      MOVE "ERRO NA GRAVACAO DO ARQUIVO DE PRODUTO"
-                                                       TO MENS
-                      PERFORM ROT-MENS THRU ROT-MENS-FIM
-                      GO TO ROT-FIM.
       * LER-XUF.
       *          MOVE 0 TO W-SEL
       *          READ XUF
@@ -376,15 +357,7 @@
                    MOVE "* DIGITE APENAS S=SIM  e  N=NAO *" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO EXC-OPC.
-       EXC-DL1.
-                DELETE PRODUTO RECORD
-                IF ST-ERRO = "00"
-                   MOVE "*** REGISTRO EXCLUIDO ***        " TO MENS
-                   PERFORM ROT-MENS THRU ROT-MENS-FIM
-                   GO TO INC-001.
-                MOVE "ERRO NA EXCLUSAO DO REGISTRO "   TO MENS
-                PERFORM ROT-MENS THRU ROT-MENS-FIM
-                GO TO ROT-FIM.
+
       *
        ALT-OPC.
                 DISPLAY (23, 40) "ALTERAR  (S/N) : ".
@@ -399,15 +372,7 @@
                    MOVE "* DIGITE APENAS S=SIM  e  N=NAO *" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO ALT-OPC.
-       ALT-RW1.
-                REWRITE REGPRO
-                IF ST-ERRO = "00" OR "02"
-                   MOVE "*** REGISTRO ALTERADO ***         " TO MENS
-                   PERFORM ROT-MENS THRU ROT-MENS-FIM
-                   GO TO INC-001.
-                MOVE "ERRO NA EXCLUSAO DO REGISTRO PRODUTO"   TO MENS
-                PERFORM ROT-MENS THRU ROT-MENS-FIM
-                GO TO ROT-FIM.
+
         DISPLAY (23, 40) "...".
                 ACCEPT (23, 57) W-OPCAO
                 IF W-OPCAO = "0" OR "Þ"
