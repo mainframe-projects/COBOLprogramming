@@ -6,32 +6,33 @@
       ******************************************************************
        IDENTIFICATION DIVISION.
 
-       PROGRAM-ID. SGP001.
+       PROGRAM-ID. SGP002.
 
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-       SELECT CADCEP ASSIGN TO "CADCEP.DAT"
+       SELECT CADPRO ASSIGN TO "CADPRO.DAT"
                     ORGANIZATION IS INDEXED
                     ACCESS MODE  IS DYNAMIC
-                    RECORD KEY   IS CODIGO-CEP
+                    RECORD KEY   IS CODIGO-PRO
                     FILE STATUS  IS ST-ERRO
-                    ALTERNATE RECORD KEY IS LOGRADOURO
+                    ALTERNATE RECORD KEY IS CODIGO-PRODUTO
                                             WITH DUPLICATES.
 
        DATA DIVISION.
        FILE SECTION.
 
-       FD CADCEP.
+       FD CADPRO.
 
-       01 REGCEP.
-               03 CODIGO-CEP        PIC 9(08).
-               03 LOGRADOURO        PIC X(40).
-               03 BAIRRO            PIC X(20).
-
-               03 CIDADE            PIC X(20).
-               03 UF                PIC X(02).
+       01 REGPRO.
+               03 CODIGO       PIC 9(08).
+               03 DENOMINACAO        PIC X(30).
+               03 UNIDADE            PIC X(12).
+               03 PREÇO CUSTO            PIC 9(06).
+               03 PREÇO VENDA            PIC 9(06).
+               03 TIPO PRODUTO           PIC 9(15).
+               03 SITUACAO               PIC X(12).
 
       *
        WORKING-STORAGE SECTION.
