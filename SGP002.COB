@@ -29,12 +29,12 @@
                03 CODIGO       PIC 9(08).
                03 DENOMINACAO        PIC X(30).
                03 UNIDADE            PIC X(12).
-               03 PREÇO CUSTO            PIC 9(06).
-               03 PREÇO VENDA            PIC 9(06).
-               03 TIPO PRODUTO           PIC 9(15).
+               03 PRECOCUSTO            PIC 9(06).
+               03 PRECOVENDA            PIC 9(06).
+               03 TIPOPRODUTO           PIC 9(15).
                03 SITUACAO               PIC X(12).
 
-      *
+      *        TODOS OS CAMPOS CONSISTIDOS (NÃO PODE ZEROS OU BRANCOS)
        WORKING-STORAGE SECTION.
 
        77 W-SEL        PIC 9(01) VALUE ZEROS.
@@ -79,7 +79,7 @@
 
       *-----------------------------------------------------------------
        SCREEN SECTION.
-       01  TELACEP.
+       01  TELAPRO.
            05  BLANK SCREEN.
            05  LINE 01  COLUMN 01
                VALUE  "|---------------------------------------".
@@ -159,24 +159,31 @@
                VALUE  "_______________________________________|".
            05  TCODIGO
                LINE 05  COLUMN 25  PIC 99999.999
-               USING  CODIGO-CEP
+               USING  CODIGO-PRO
                HIGHLIGHT.
-           05  TLOGRADOURO
-               LINE 07  COLUMN 25  PIC X(40)
-               USING  LOGRADOURO
+           05  TCPRECOCUSTO
+               LINE 05  COLUMN 25  PIC 99999.999
+               USING  PRECOCUSTO
                HIGHLIGHT.
-           05  TBAIRRO
-               LINE 09  COLUMN 25  PIC X(20)
-               USING  BAIRRO
+           05  TPRECOVENDA
+               LINE 05  COLUMN 25  PIC 99999.999
+               USING  PRECOVENDA
                HIGHLIGHT.
-
-           05  TCIDADE
+           05  TDENOMINACAO
+               LINE 07  COLUMN 25  PIC X(30)
+               USING  DENOMINACAO
+               HIGHLIGHT.
+           05  TUNIDADE
+               LINE 09  COLUMN 25  PIC X(12)
+               USING  UNIDADE
+               HIGHLIGHT.
+           05  TTIPOPRODUTO
                LINE 11  COLUMN 30  PIC X(20)
-               USING  CIDADE
+               USING  TIPOPRODUTO
                HIGHLIGHT.
-           05  TUF
+           05  TSITUACAO
                LINE 13  COLUMN 26  PIC X(02)
-               USING  UF
+               USING  SITUACAO
                HIGHLIGHT.
             05 TUFX
                LINE 13  COLUMN 29  PIC X(20)
