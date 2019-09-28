@@ -2,7 +2,7 @@
       * Author: LÁZARO V.A. SANTOS
       * Date: 14-09-2019
       * Purpose: Sistema de pastelaria
-      * Tectonics: cobc
+      * Tectonics: COB
       ******************************************************************
        IDENTIFICATION DIVISION.
 
@@ -15,9 +15,9 @@
        SELECT CADPRO ASSIGN TO "CADPRO.DAT"
                     ORGANIZATION IS INDEXED
                     ACCESS MODE  IS DYNAMIC
-                    RECORD KEY   IS CODIGO-PRO
+                    RECORD KEY   IS CODIGO
                     FILE STATUS  IS ST-ERRO
-                    ALTERNATE RECORD KEY IS CODIGO-PRODUTO
+                    ALTERNATE RECORD KEY IS CODIGO
                                             WITH DUPLICATES.
 
        DATA DIVISION.
@@ -159,7 +159,7 @@
                VALUE  "_______________________________________|".
            05  TCODIGO
                LINE 05  COLUMN 25  PIC 99999.999
-               USING  CODIGO-PRO
+               USING  CODIGO
                HIGHLIGHT.
            05  TCPRECOCUSTO
                LINE 05  COLUMN 25  PIC 99999.999
@@ -200,26 +200,6 @@
 
        INC-006.
 
-
-                ACCEPT TUF
-                ACCEPT
-                ACCEPT (08, 12) PRECMD
-                MOVE PRECMD TO MASC1
-                DISPLAY (08, 12)MASC1
-                ACCEPT W-ACT FROM ESCAPE KEY
-                IF W-ACT = 02 GO TO INC-005.
-       INC-006A.
-               MOVE 1 TO IND
-       INC-006B.
-               IF UF NOT = TABUF1(IND)
-                   IF IND < 27
-                       ADD 1 TO IND
-                       GO TO INC-006B
-                   ELSE
-                       MENSAGEM "UF INCORRETA."
-                       GO TO INC-006
-                   ELSE
-                       DISPLAY TELA.
        INC-007.
 
        INC-008.

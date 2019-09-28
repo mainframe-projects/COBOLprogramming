@@ -1,8 +1,8 @@
       ******************************************************************
       * Author: LÁZARO V.A. SANTOS
       * Date: 14-09-2019
-      * Purpose: Sistema de pastelaria
-      * Tectonics: cobc
+      * Purpose: Cadastro de CEP
+      * Tectonics: COB
       ******************************************************************
        IDENTIFICATION DIVISION.
 
@@ -194,20 +194,20 @@
 
 
                 ACCEPT TUF
-                ACCEPT (08, 12) PRECMD
-                MOVE PRECMD TO MASC1
+                ACCEPT (08, 12)
+                MOVE TUF TO MASC1
                 DISPLAY (08, 12)MASC1
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-005.
        INC-006A.
                MOVE 1 TO IND
        INC-006B.
-               IF UF NOT = TABUF1(IND)
+               IF UF NOT = TABUF (IND)
                    IF IND < 27
                        ADD 1 TO IND
                        GO TO INC-006B
                    ELSE
-                       MENSAGEM "UF INCORRETA."
+                       MENSAGEM "UF INCORRETA"
                        GO TO INC-006
                    ELSE
                        DISPLAY TELA.

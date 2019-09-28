@@ -31,14 +31,20 @@
                LABEL RECORD IS STANDARD
                VALUE OF FILE-ID IS "CADCLIENTE.DAT".
        01 REGCLI.
-                03 APELIDO             PIC X(12).
-                03 NOME                PIC X(30).
-                03 EMAIL               PIC X(30).
-				           03 DATA-NASC           PIC 9(8).
-				           03 TIPO-AMIGO          PIC 9(1).
-			           	03 SEXO                PIC X(1).
-				            03 GENERO AMIGO        PIC X(1).
-				            03 TELEFONE            PIC 9(9).
+                03 CPF               PIC X(12).
+                03 NOME              PIC X(40).
+                03 RG                PIC X(15).
+                03 ESTADOCIVIL       PIC X(12).
+                03 CEP               PIC 9(1).
+			           	03 LOGRADOURO        PIC X(40).
+                03 COMPLE            PIC X(10).
+                03 TELEFONE          PIC 9(9).
+                03 NUM
+                03 BAIRRO            PIC X(25).
+                03 CIDADE            PIC X(25).
+                03 UF                PIC X(2).
+                03 EMAIL             PIC X(40).
+                03 SITUACAO          PIC X (20).
       *
       *-----------------------------------------------------------------
        WORKING-STORAGE SECTION.
@@ -50,7 +56,7 @@
        77 MENS         PIC X(50) VALUE SPACES.
        77 LIMPA        PIC X(50) VALUE SPACES.
 
-      01 TABAMIGO.
+       01 TABAMIGO.
           03 T4 PIC X(55) VALUE
           "FAXULDADE  IGREJA     BAIRRO     BAR        ACADEMIA   ".
           03 T5 PIC X(56) VALUE
