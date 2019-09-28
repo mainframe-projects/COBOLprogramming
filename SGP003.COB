@@ -4,7 +4,7 @@
       * Purpose: Cadastro de Cliente
       * Tectonics: COB
       ******************************************************************
-             IDENTIFICATION DIVISION.
+       IDENTIFICATION DIVISION.
        PROGRAM-ID. SGP003.
       **************************************
       * MANUTENCAO DO CADASTRO DE CLIENTE  *
@@ -21,7 +21,7 @@
                     ACCESS MODE  IS DYNAMIC
                     RECORD KEY   IS APELIDO
                     FILE STATUS  IS ST-ERRO
-                    ALTERNATE RECORD KEY IS CHAVE2 = NOME
+                    ALTERNATE RECORD KEY IS NOME
                                                       WITH DUPLICATES.
       *
       *-----------------------------------------------------------------
@@ -70,7 +70,214 @@
            "MMASCULINO  FFEMININO   TTRANSGENERO         SSEM GENERO0 ".
            03 T2 PIC X(36) VALUE
            "AWWWWWWWWWWWBDDDDDDDDDDDCHHHHHHHHHHHDTTTTTTTTTTTELLLLLLLLL".
-       01 TABGEN REDEFINES TABGENERO.
+       01 TABGEN REDEFINES TABGENERO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       .
            03 TGEN        PIC X(11) OCCURS 10 TIMES.
        01 ALFAGN.
              03 ALFAGN1 PIC X(01).

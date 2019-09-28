@@ -180,7 +180,7 @@
 
        INC-OPC.
                 MOVE "S" TO W-OPCAO
-                DISPLAY (23, 40) "DADOS OK (S/N) : ".
+                DISPLAY "DADOS OK (S/N) : " AT 2340.
                 ACCEPT (23, 57) W-OPCAO WITH UPDATE
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-005.
