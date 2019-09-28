@@ -194,7 +194,6 @@
 
 
                 ACCEPT TUF
-                ACCEPT
                 ACCEPT (08, 12) PRECMD
                 MOVE PRECMD TO MASC1
                 DISPLAY (08, 12)MASC1
