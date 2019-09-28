@@ -1,6 +1,6 @@
       ******************************************************************
       * Author: LÁZARO V.A. SANTOS
-      * Date: 14-09-2019
+      * Date: 21-09-2019
       * Purpose: Sistema de pastelaria
       * Tectonics: COB
       ******************************************************************
@@ -47,35 +47,6 @@
        77 LIMPA        PIC X(50) VALUE SPACES.
        01 XUF          PIC X(20) VALUE ZEROS.
       *----------------------------------------------------------------*
-       01 IND PIC 9(02) VALUE ZEROS.
-
-       01 TB.
-       03 TB1 PIC X(54) VALUE "ACAMROSPRJBASCMTMGRSESCEAL".
-
-       01 TABUF REDEFINES TB.
-       03 TABUFX PIC X(02) OCCURS 27 TIMES.
-       01 TBE.
-      *                         1234567890123456789012345678901234567890
-       03 TBE1 PIC X(40) VALUE "SÃO PAULO           ACRE".
-       03 TBE2 PIC X(40) VALUE "RIO DE JANEIRO      CEARA".
-       03 TBE3 PIC X(40) VALUE "ESPIRITO SANTO      BAHIA".
-       03 TBE4 PIC X(40) VALUE "AMAZONAS".
-       03 TBE5 PIC X(40) VALUE "MINAS GERAIS".
-       03 TBE6 PIC X(40) VALUE "BAHIA".
-       03 TBE7 PIC X(40) VALUE "CEARÁ".
-       03 TBE8 PIC X(40) VALUE "ALAGOAS".
-       03 TBE9 PIC X(40) VALUE "SANTA CATARINA".
-       03 TBE10 PIC X(20) VALUE "BRASÍLIA".
-       03 TBE11 PIC X(20) VALUE "DISTRITO FEDERAL".
-       03 TBE12 PIC X(20) VALUE "MARANHÃO".
-       03 TBE13 PIC X(20) VALUE "PIAUÍ".
-       03 TBE14 PIC X(20) VALUE "AMAPÁ".
-       03 TBE15 PIC X(20) VALUE "RONDÔNIA".
-       03 TBE16 PIC X(20) VALUE "RORAIMA".
-
-       01 TABUFE REDEFINES TBE.
-
-       03 TABUFE1 PIC X(20) OCCURS 27 TIMES.
 
       *-----------------------------------------------------------------
        SCREEN SECTION.
@@ -224,7 +195,7 @@
 
        ACE-001.
                 DISPLAY (23, 12)
-                     "F1=NOVO REGISTRO DE CEP   F2=ALTERAR CEP  F3=EXCLUIR CEP"
+            "F1=NOVO REGISTRO DE CEP   F2=ALTERAR CEP  F3=EXCLUIR CEP"
                 ACCEPT (23, 55) W-OPCAO
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT NOT = 02 AND W-ACT NOT = 03 AND W-ACT NOT = 04

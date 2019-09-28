@@ -36,15 +36,15 @@
                 03 RG                PIC X(15).
                 03 ESTADOCIVIL       PIC X(12).
                 03 CEP               PIC 9(1).
-			           	03 LOGRADOURO        PIC X(40).
+                03 LOGRADOURO        PIC X(40).
                 03 COMPLE            PIC X(10).
                 03 TELEFONE          PIC 9(9).
-                03 NUM
+                03 NUM               PIC X(13).
                 03 BAIRRO            PIC X(25).
                 03 CIDADE            PIC X(25).
                 03 UF                PIC X(2).
                 03 EMAIL             PIC X(40).
-                03 SITUACAO          PIC X (20).
+                03 SITUACAO          PIC X(20).
       *
       *-----------------------------------------------------------------
        WORKING-STORAGE SECTION.
@@ -65,12 +65,12 @@
            03 TAMIGO        PIC X(11) OCCURS 09 TIMES.
        01 ALFAAMIGO         PIC X(11).
 
-	       01 TABGENERO.
-          03 T1 PIC X(36) VALUE
-          "MMASCULINO  FFEMENINO   TTRANSGENERONNEUTRO     SSEM GENERO0 ".
-		  03 T2 PIC X(36) VALUE
-          "AWWWWWWWWWWWBDDDDDDDDDDDCHHHHHHHHHHHDTTTTTTTTTTTELLLLLLLLLLL".
-       01 TABGEN REDEFINES TABGENEROD.
+           01 TABGENERO.
+           03 T1 PIC X(36) VALUE
+           "MMASCULINO  FFEMININO   TTRANSGENERO         SSEM GENERO0 ".
+           03 T2 PIC X(36) VALUE
+           "AWWWWWWWWWWWBDDDDDDDDDDDCHHHHHHHHHHHDTTTTTTTTTTTELLLLLLLLL".
+       01 TABGEN REDEFINES TABGENERO.
            03 TGEN        PIC X(11) OCCURS 10 TIMES.
        01 ALFAGN.
              03 ALFAGN1 PIC X(01).
@@ -100,11 +100,11 @@
                 DISPLAY (04, 01) "APELIDO            : "
                 DISPLAY (05, 01) "NOME               : "
                 DISPLAY (06, 01) "EMAIL              : "
-				DISPLAY (07, 01) "DATA DE NASCIMENTO : "
-				DISPLAY (08, 01) "TIPO DE AMIGO      : "
-				DISPLAY (09, 01) "SEXO               : "
-				DISPLAY (10, 01) "GENERO AMIGO       : "
-				DISPLAY (11, 01) "TELEFONE           : "
+                DISPLAY (07, 01) "DATA DE NASCIMENTO : "
+                DISPLAY (08, 01) "TIPO DE AMIGO      : "
+                DISPLAY (09, 01) "SEXO               : "
+                DISPLAY (10, 01) "GENERO AMIGO       : "
+                DISPLAY (11, 01) "TELEFONE           : "
 
 
        INC-002.
@@ -124,11 +124,11 @@
                    IF ST-ERRO = "00"
                       DISPLAY (05, 21) NOME
                       DISPLAY (06, 21) EMAIL
-					  DISPLAY (07, 21) DATA-NASC
-				      DISPLAY (08, 21) TIPO-AMIGO
-				      DISPLAY (09, 21) SEXO
-				      DISPLAY (10, 21) GENERO
-				      DISPLAY (11, 21) TELEFONE
+                      DISPLAY (07, 21) DATA-NASC
+                      DISPLAY (08, 21) TIPO-AMIGO
+                      DISPLAY (09, 21) SEXO
+                      DISPLAY (10, 21) GENERO
+                      DISPLAY (11, 21) TELEFONE
                       MOVE "*** APELIDO JA CADASTRADO ***" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       MOVE 1 TO W-SEL
@@ -148,42 +148,42 @@
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-003.
 
-	   INC-005.
+       INC-005.
                 ACCEPT (06, 21) DATA-NASC
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-004.
-	   INC-006.
+       INC-006.
                 ACCEPT (06, 21) TIPO-AMIGO
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-005.
-				IF TIPO-AMIGO = 0 OU TIPO-AMIGO > 9
-				 MOVE "TIPO DE AMIGO INVALIDO" TO MENS
-				 PEFORM ROT-MENS TO ROT-MENS-FIM
-				 GO TO INC-006.
-				 MOVE TAMIGO(TIPO-AMIGO) TO ALFAAMIGO
-				 DISPLAY (LL CC) ALFAAMIGO.
-	   INC-007.
+                IF TIPO-AMIGO = 0 OU TIPO-AMIGO > 9
+                 MOVE "TIPO DE AMIGO INVALIDO" TO MENS
+                 PEFORM ROT-MENS TO ROT-MENS-FIM
+                 GO TO INC-006.
+                 MOVE TAMIGO(TIPO-AMIGO) TO ALFAAMIGO
+                 DISPLAY (LL CC) ALFAAMIGO.
+       INC-007.
                 ACCEPT (06, 21) SEXO
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-006.
-	   INC-008.
+       INC-008.
                 ACCEPT (06, 21) GENERO
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-007.
-				MOVE 1 TO IND.
+                MOVE 1 TO IND.
        INC-008A.
                 MOVE TABGEN(IND) TO ALFAGN
-				IF ALFAGN1 NOT = GENERO
-				   ADD 1 TO IND
-				     IF IND > 10
-		               MOVE "*** GENERO NAO ENCONTRADO ***" TO MENS
+                IF ALFAGN1 NOT = GENERO
+                   ADD 1 TO IND
+                     IF IND > 10
+                       MOVE "*** GENERO NAO ENCONTRADO ***" TO MENS
                        PERFORM ROT-MENS THRU ROT-MENS-FIM
                        GO TO INC-008
                      ELSE
-				       GO TO INC=008A
-		        ELSE
-				     DISPLAY (LL CC) ALFAGN2
-	   INC-009.
+                       GO TO INC=008A
+                ELSE
+                     DISPLAY (LL CC) ALFAGN2
+       INC-009.
                 ACCEPT (06, 21) TELEFONE
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-008.

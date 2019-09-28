@@ -194,25 +194,24 @@
 
 
                 ACCEPT TUF
-                ACCEPT (08, 12)
                 MOVE TUF TO MASC1
                 DISPLAY (08, 12)MASC1
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-005.
        INC-006A.
                MOVE 1 TO IND
-       INC-006B.
-               IF UF NOT = TABUF (IND)
+               GO TO INC-007.
+
+       INC-007.
+               IF UF NOT = TABUFX (IND)
                    IF IND < 27
                        ADD 1 TO IND
                        GO TO INC-006B
                    ELSE
                        MENSAGEM "UF INCORRETA"
-                       GO TO INC-006
+                       GO TO INC-006.
                    ELSE
                        DISPLAY TELA.
-       INC-007.
-
        INC-008.
 
        INC-009.
