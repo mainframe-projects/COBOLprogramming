@@ -156,7 +156,7 @@
                LINE 13  COLUMN 26  PIC X(02)
                USING  SITUACAO
                HIGHLIGHT.
-            05 TUFX
+           05 TUFX
                LINE 13  COLUMN 29  PIC X(20)
                USING  XUF
                HIGHLIGHT.
@@ -166,22 +166,13 @@
        PROCEDURE DIVISION.
        INICIO.
       *
-
-
-
-       INC-006.
-
-       INC-007.
-
-       INC-008.
-
-       INC-009.
-
+       INC-001.
+       INC-002.
 
        INC-OPC.
                 MOVE "S" TO W-OPCAO
                 DISPLAY "DADOS OK (S/N) : " AT 2340.
-                ACCEPT (23, 57) W-OPCAO WITH UPDATE
+                ACCEPT W-OPCAO WITH UPDATE
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-005.
                 IF W-OPCAO = "N" OR "n"
@@ -194,14 +185,15 @@
                    GO TO INC-OPC.
 
        ACE-001.
-                DISPLAY (23, 12)
-            "F1=NOVO REGISTRO DE CEP   F2=ALTERAR CEP  F3=EXCLUIR CEP"
-                ACCEPT (23, 55) W-OPCAO
+
+                   DISPLAY 'F1=NOVO REGISTRO DE CEP    F2=ALTERAR CEP
+     -             F3=EXCLUIR CEP'.
+                ACCEPT W-OPCAO AT 2355.
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT NOT = 02 AND W-ACT NOT = 03 AND W-ACT NOT = 04
                    GO TO ACE-001.
                 MOVE SPACES TO MENS
-                DISPLAY (23, 12) MENS
+                DISPLAY MENS AT 2312.
                 IF W-ACT = 02
                    MOVE 02 TO W-SEL
                    GO TO INC-001.
@@ -209,8 +201,8 @@
                    GO TO INC-003.
       *
        EXC-OPC.
-                DISPLAY (23, 40) "EXCLUIR   (S/N) : ".
-                ACCEPT (23, 57) W-OPCAO
+                DISPLAY "EXCLUIR   (S/N) : ". AT 2340.
+                ACCEPT W-OPCAO AT 2357
                 IF W-OPCAO = "N" OR "n"
                    MOVE "*** REGISTRO NAO EXCLUIDO ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -235,7 +227,7 @@
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO ALT-OPC.
 
-        DISPLAY (23, 40) "...".
+                DISPLAY "...". AT 2340
                 ACCEPT (23, 57) W-OPCAO
                 IF W-OPCAO = "0" OR "Þ"
                    MOVE "*** CARACTERES NAO ACEITOS ***" TO MENS
@@ -268,7 +260,7 @@
                 IF W-CONT < 30000
                    GO TO ROT-MENS2
                 ELSE
-                   DISPLAY (23, 12) LIMPA.
+                   DISPLAY LIMPA. AT 2312.
        ROT-MENS-FIM.
                 EXIT.
        FIM-ROT-TEMPO.
