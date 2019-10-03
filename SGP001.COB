@@ -15,7 +15,7 @@
        SELECT CADCEP ASSIGN TO "CADCEP.DAT"
                     ORGANIZATION IS INDEXED
                     ACCESS MODE  IS DYNAMIC
-                    RECORD KEY   IS CODIGO-CEP
+                    RECORD KEY   IS CODCEP
                     FILE STATUS  IS ST-ERRO
                     ALTERNATE RECORD KEY IS LOGRADOURO
                                             WITH DUPLICATES.
@@ -26,15 +26,17 @@
        FD CADCEP.
 
        01 REGCEP.
-               03 CODIGO-CEP        PIC 9(08).
+               03 CODCEP        PIC 9(08).
                03 LOGRADOURO        PIC X(40).
                03 BAIRRO            PIC X(20).
-
                03 CIDADE            PIC X(20).
                03 UF                PIC X(02).
 
       *
        WORKING-STORAGE SECTION.
+
+       01 MASC1           PIC ZZZ.ZZ9,99.
+      * 01 MASC2           PIC ZZZZ.ZZZ.ZZ9,99.
 
        77 W-SEL        PIC 9(01) VALUE ZEROS.
        77 W-CONT       PIC 9(06) VALUE ZEROS.
@@ -158,7 +160,7 @@
                VALUE  "_______________________________________|".
            05  TCODIGO
                LINE 05  COLUMN 25  PIC 99999.999
-               USING  CODIGO-CEP
+               USING  CODCEP
                HIGHLIGHT.
            05  TLOGRADOURO
                LINE 07  COLUMN 25  PIC X(40)
@@ -185,18 +187,15 @@
 
       *----------------------------------------------------------------*
        PROCEDURE DIVISION.
+
        INICIO.
       *
 
-
-
        INC-006.
-
-
                 ACCEPT TUF
                 MOVE TUF TO MASC1
-                DISPLAY (08, 12)MASC1
-                ACCEPT W-ACT FROM ESCAPE KEY
+                DISPLAY MASC1 AT 0812.
+      *          ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-005.
        INC-006A.
                MOVE 1 TO IND
@@ -206,7 +205,7 @@
                IF UF NOT = TABUFX (IND)
                    IF IND < 27
                        ADD 1 TO IND
-                       GO TO INC-006B
+                       GO TO INC-006.
                    ELSE
                        MENSAGEM "UF INCORRETA"
                        GO TO INC-006.
@@ -219,8 +218,8 @@
 
        INC-OPC.
                 MOVE "S" TO W-OPCAO
-                DISPLAY (23, 40) "DADOS OK (S/N) : ".
-                ACCEPT (23, 57) W-OPCAO WITH UPDATE
+                DISPLAY "DADOS OK (S/N) : " AT 2340.
+                ACCEPT W-OPCAO WITH UPDATE AT 2357.
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-005.
                 IF W-OPCAO = "N" OR "n"
@@ -233,14 +232,14 @@
                    GO TO INC-OPC.
 
        ACE-001.
-                DISPLAY (23, 12)
-                     "F1=NOVO REGISTRO DE CEP   F2=ALTERAR CEP  F3=EXCLUIR CEP"
-                ACCEPT (23, 55) W-OPCAO
+                DISPLAY AT 2312
+             "F1=NOVO REGISTRO DE CEP   F2=ALTERAR CEP  F3=EXCLUIR CEP"
+                ACCEPT W-OPCAO AT 2355.
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT NOT = 02 AND W-ACT NOT = 03 AND W-ACT NOT = 04
                    GO TO ACE-001.
                 MOVE SPACES TO MENS
-                DISPLAY (23, 12) MENS
+                DISPLAY MENS AT 2312.
                 IF W-ACT = 02
                    MOVE 02 TO W-SEL
                    GO TO INC-001.
@@ -248,7 +247,7 @@
                    GO TO INC-003.
       *
        EXC-OPC.
-                DISPLAY (23, 40) "EXCLUIR   (S/N) : ".
+                DISPLAY "EXCLUIR   (S/N) : " AT 2340.
                 ACCEPT (23, 57) W-OPCAO
                 IF W-OPCAO = "N" OR "n"
                    MOVE "*** REGISTRO NAO EXCLUIDO ***" TO MENS
