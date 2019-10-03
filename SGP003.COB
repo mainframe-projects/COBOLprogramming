@@ -19,7 +19,7 @@
        SELECT CADCLIENTE ASSIGN TO DISK
                     ORGANIZATION IS INDEXED
                     ACCESS MODE  IS DYNAMIC
-                    RECORD KEY   IS APELIDO
+                    RECORD KEY   IS REGCLI
                     FILE STATUS  IS ST-ERRO
                     ALTERNATE RECORD KEY IS NOME
                                                       WITH DUPLICATES.
@@ -70,214 +70,7 @@
            "MMASCULINO  FFEMININO   TTRANSGENERO         SSEM GENERO0 ".
            03 T2 PIC X(36) VALUE
            "AWWWWWWWWWWWBDDDDDDDDDDDCHHHHHHHHHHHDTTTTTTTTTTTELLLLLLLLL".
-       01 TABGEN REDEFINES TABGENERO
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       .
+       01 TABGEN REDEFINES TABGENERO.
            03 TGEN        PIC X(11) OCCURS 10 TIMES.
        01 ALFAGN.
              03 ALFAGN1 PIC X(01).
@@ -287,11 +80,11 @@
        INICIO.
       *
        INC-000.
-           OPEN I-O CADAMIGO
+           OPEN I-O CADCLIENTE
            IF ST-ERRO NOT = "00"
                IF ST-ERRO = "30"
-                      OPEN OUTPUT CADAMIGO
-                      CLOSE CADAMIGO
+                      OPEN OUTPUT CADCLIENTE
+                      CLOSE CADCLIENTE
                       MOVE "*** ARQUIVO CADAMIGO FOI CRIADO **" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO INC-000
@@ -302,26 +95,26 @@
                 ELSE
                     NEXT SENTENCE.
        INC-001.
-                DISPLAY (01, 01) ERASE.
-                DISPLAY (01, 20) "CADASTRO DE AMIGOS"
-                DISPLAY (04, 01) "APELIDO            : "
-                DISPLAY (05, 01) "NOME               : "
-                DISPLAY (06, 01) "EMAIL              : "
-                DISPLAY (07, 01) "DATA DE NASCIMENTO : "
-                DISPLAY (08, 01) "TIPO DE AMIGO      : "
-                DISPLAY (09, 01) "SEXO               : "
-                DISPLAY (10, 01) "GENERO AMIGO       : "
-                DISPLAY (11, 01) "TELEFONE           : "
+      *          DISPLAY (01, 01) ERASE.
+                DISPLAY "CADASTRO DE AMIGOS" AT 0120
+                DISPLAY "APELIDO            : " AT 0401
+                DISPLAY "NOME               : " AT 0501
+                DISPLAY "EMAIL              : " AT 0601
+                DISPLAY "DATA DE NASCIMENTO : " AT 0701
+                DISPLAY "TIPO DE AMIGO      : " AT 0801
+                DISPLAY "SEXO               : " AT 0901
+                DISPLAY "GENERO AMIGO       : " AT 1001
+                DISPLAY "TELEFONE           : " AT 1101.
 
 
        INC-002.
-                ACCEPT  (04, 21) APELIDO
+                ACCEPT CADCLIENTE AT 0421.
                 ACCEPT W-ACT FROM ESCAPE KEY
                  IF W-ACT = 02
-                   CLOSE CADAMIGO
+                   CLOSE CADCLIENTE
                    GO TO ROT-FIM.
-                IF APELIDO  = " "
-                   MOVE "*** APELIDO INVALIDO ***" TO MENS
+                IF CADCLIENTE = " "
+                   MOVE "*** NOME INVALIDO ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO INC-002.
        LER-PRODUTO01.
@@ -336,7 +129,7 @@
                       DISPLAY (09, 21) SEXO
                       DISPLAY (10, 21) GENERO
                       DISPLAY (11, 21) TELEFONE
-                      MOVE "*** APELIDO JA CADASTRADO ***" TO MENS
+                      MOVE "*** NOME JA CADASTRADO ***" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       MOVE 1 TO W-SEL
                       GO TO ACE-001
