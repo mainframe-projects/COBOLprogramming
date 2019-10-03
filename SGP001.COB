@@ -80,7 +80,7 @@
 
       *-----------------------------------------------------------------
        SCREEN SECTION.
-       01  TELACEP.
+       01  TELA.
            05  BLANK SCREEN.
            05  LINE 01  COLUMN 01
                VALUE  "|---------------------------------------".
@@ -189,11 +189,54 @@
        PROCEDURE DIVISION.
 
        INICIO.
-      *
+       INC-001.
+               DISPLAY TELA.
 
+       INC-002.
+                ACCEPT CODCEP AT 0421
+                ACCEPT W-ACT FROM ESCAPE KEY
+                IF W-ACT = 02
+                   CLOSE CADCEP
+                   GO TO ROT-FIM.
+                IF CODCEP  = 0
+                   MOVE "*** CEP INVALIDO ***" TO MENS
+                   PERFORM ROT-MENS THRU ROT-MENS-FIM
+                   GO TO INC-002.
+       LER-CEP01.
+                MOVE 0 TO W-SEL
+                READ CADCEP
+                IF ST-ERRO NOT = "23"
+                   IF ST-ERRO = "00"
+                      DISPLAY CODCEP AT 0512
+                      DISPLAY LOGRADOURO AT 0612
+                      DISPLAY BAIRRO AT 0712
+                      DISPLAY CIDADE AT 0812
+                      DISPLAY UF AT 0912
+                      MOVE "*** CEP JA CADASTRAD0 ***" TO MENS
+                      PERFORM ROT-MENS THRU ROT-MENS-FIM
+                      MOVE 1 TO W-SEL
+                      GO TO ACE-001
+                   ELSE
+                      MOVE "ERRO NA LEITURA ARQ. PRODUTO"   TO MENS
+                      PERFORM ROT-MENS THRU ROT-MENS-FIM
+                      GO TO ROT-FIM
+                ELSE
+                   GO TO INC-003.
+       INC-003.
+                ACCEPT CODCEP AT 0521
+                ACCEPT W-ACT FROM ESCAPE KEY
+                IF W-ACT = 02 GO TO INC-002.
+       INC-004.
+                ACCEPT LOGRADOURO AT 0621
+                ACCEPT W-ACT FROM ESCAPE KEY
+                IF W-ACT = 02 GO TO INC-003.
+       INC-005.
+                ACCEPT BAIRRO AT 0721
+                ACCEPT W-ACT FROM ESCAPE KEY
+                IF W-ACT = 02 GO TO INC-004.
        INC-006.
-                ACCEPT TUF
-                MOVE TUF TO MASC1
+                ACCEPT UF
+                MOVE UF TO MASC1
                 DISPLAY MASC1 AT 0812.
       *          ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-005.
@@ -205,23 +248,18 @@
                IF UF NOT = TABUFX (IND)
                    IF IND < 27
                        ADD 1 TO IND
-                       GO TO INC-006.
-                   ELSE
-                       MENSAGEM "UF INCORRETA"
-                       GO TO INC-006.
-                   ELSE
-                       DISPLAY TELA.
-       INC-008.
-
-       INC-009.
-
-
+                       GO TO INC-006
+                       ELSE
+                           DISPLAY "UF INCORRETA" AT 2340
+                           GO TO INC-006
+                           ELSE
+                           DISPLAY TELA.
        INC-OPC.
                 MOVE "S" TO W-OPCAO
-                DISPLAY "DADOS OK (S/N) : " AT 2340.
-                ACCEPT W-OPCAO WITH UPDATE AT 2357.
+                DISPLAY "DADOS OK (S/N) : " AT 2340
+                ACCEPT W-OPCAO AT 2357.
                 ACCEPT W-ACT FROM ESCAPE KEY
-                IF W-ACT = 02 GO TO INC-005.
+                IF W-ACT = 02 GO TO INC-005
                 IF W-OPCAO = "N" OR "n"
                    MOVE "* DADOS RECUSADOS PELO OPERADOR *" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -232,8 +270,9 @@
                    GO TO INC-OPC.
 
        ACE-001.
-                DISPLAY AT 2312
+                DISPLAY
              "F1=NOVO REGISTRO DE CEP   F2=ALTERAR CEP  F3=EXCLUIR CEP"
+              AT 2312.
                 ACCEPT W-OPCAO AT 2355.
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT NOT = 02 AND W-ACT NOT = 03 AND W-ACT NOT = 04
@@ -248,7 +287,7 @@
       *
        EXC-OPC.
                 DISPLAY "EXCLUIR   (S/N) : " AT 2340.
-                ACCEPT (23, 57) W-OPCAO
+                ACCEPT W-OPCAO AT 2357.
                 IF W-OPCAO = "N" OR "n"
                    MOVE "*** REGISTRO NAO EXCLUIDO ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -260,8 +299,8 @@
 
       *
        ALT-OPC.
-                DISPLAY (23, 40) "ALTERAR  (S/N) : ".
-                ACCEPT (23, 57) W-OPCAO
+                DISPLAY "ALTERAR  (S/N) : " AT 2340.
+                ACCEPT W-OPCAO AT 2357.
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-005.
                 IF W-OPCAO = "N" OR "n"
@@ -273,8 +312,8 @@
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO ALT-OPC.
 
-        DISPLAY (23, 40) "...".
-                ACCEPT (23, 57) W-OPCAO
+                DISPLAY "..." AT 2340.
+                ACCEPT W-OPCAO AT 2357.
                 IF W-OPCAO = "0" OR "Þ"
                    MOVE "*** CARACTERES NAO ACEITOS ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -285,7 +324,7 @@
       **********************
       *
        ROT-FIM.
-                DISPLAY (01, 01) ERASE
+      *          DISPLAY ERASE AT 0101.
                 EXIT PROGRAM.
        ROT-FIMP.
                 EXIT PROGRAM.
@@ -300,13 +339,13 @@
        ROT-MENS.
                 MOVE ZEROS TO W-CONT.
        ROT-MENS1.
-               DISPLAY (23, 12) MENS.
+               DISPLAY MENS at 2312.
        ROT-MENS2.
                 ADD 1 TO W-CONT
                 IF W-CONT < 30000
                    GO TO ROT-MENS2
                 ELSE
-                   DISPLAY (23, 12) LIMPA.
+                   DISPLAY LIMPA AT 2312.
        ROT-MENS-FIM.
                 EXIT.
        FIM-ROT-TEMPO.
