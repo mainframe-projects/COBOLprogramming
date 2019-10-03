@@ -169,12 +169,13 @@
        INC-001.
        INC-002.
 
+
        INC-OPC.
                 MOVE "S" TO W-OPCAO
                 DISPLAY "DADOS OK (S/N) : " AT 2340.
                 ACCEPT W-OPCAO WITH UPDATE
                 ACCEPT W-ACT FROM ESCAPE KEY
-                IF W-ACT = 02 GO TO INC-005.
+                IF W-ACT = 02 GO TO INC-001.
                 IF W-OPCAO = "N" OR "n"
                    MOVE "* DADOS RECUSADOS PELO OPERADOR *" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -198,10 +199,10 @@
                    MOVE 02 TO W-SEL
                    GO TO INC-001.
                 IF W-ACT = 03
-                   GO TO INC-003.
+                   GO TO INC-001.
       *
        EXC-OPC.
-                DISPLAY "EXCLUIR   (S/N) : ". AT 2340.
+                DISPLAY "EXCLUIR   (S/N) : " AT 2340.
                 ACCEPT W-OPCAO AT 2357
                 IF W-OPCAO = "N" OR "n"
                    MOVE "*** REGISTRO NAO EXCLUIDO ***" TO MENS
@@ -214,10 +215,10 @@
 
       *
        ALT-OPC.
-                DISPLAY (23, 40) "ALTERAR  (S/N) : ".
-                ACCEPT (23, 57) W-OPCAO
+                DISPLAY "ALTERAR  (S/N) : " AT 2340.
+                ACCEPT W-OPCAO AT 2357.
                 ACCEPT W-ACT FROM ESCAPE KEY
-                IF W-ACT = 02 GO TO INC-005.
+                IF W-ACT = 02 GO TO INC-001.
                 IF W-OPCAO = "N" OR "n"
                    MOVE "*** INFORMACOES NAO ALTERADAS *** " TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -226,9 +227,8 @@
                    MOVE "* DIGITE APENAS S=SIM  e  N=NAO *" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO ALT-OPC.
-
-                DISPLAY "...". AT 2340
-                ACCEPT (23, 57) W-OPCAO
+                DISPLAY "..." AT 2340.
+                ACCEPT W-OPCAO AT 2357.
                 IF W-OPCAO = "0" OR "Þ"
                    MOVE "*** CARACTERES NAO ACEITOS ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -239,7 +239,7 @@
       **********************
       *
        ROT-FIM.
-                DISPLAY (01, 01) ERASE
+      *          DISPLAY (01, 01) ERASE
                 EXIT PROGRAM.
        ROT-FIMP.
                 EXIT PROGRAM.
@@ -254,18 +254,18 @@
        ROT-MENS.
                 MOVE ZEROS TO W-CONT.
        ROT-MENS1.
-               DISPLAY (23, 12) MENS.
+               DISPLAY MENS AT 2312.
        ROT-MENS2.
                 ADD 1 TO W-CONT
                 IF W-CONT < 30000
                    GO TO ROT-MENS2
                 ELSE
-                   DISPLAY LIMPA. AT 2312.
+                   DISPLAY LIMPA AT 2312.
        ROT-MENS-FIM.
                 EXIT.
        FIM-ROT-TEMPO.
 
        MAIN-PROCEDURE.
-            DISPLAY "BEM-VINDO AO SGP!"
+            DISPLAY "BEM-VINDO AO SISTEMA DE PASTELARIA!"
             STOP RUN.
-       END PROGRAM SGP001.
+       END PROGRAM SGP002.
