@@ -28,7 +28,7 @@
        DATA DIVISION.
        FILE SECTION.
        FD CADCLIENTE
-               LABEL RECORD IS STANDARD
+      *         LABEL RECORD IS STANDARD
                VALUE OF FILE-ID IS "CADCLIENTE.DAT".
        01 REGCLI.
                 03 CPF               PIC X(12).
@@ -57,19 +57,19 @@
        77 LIMPA        PIC X(50) VALUE SPACES.
 
        01 TABAMIGO.
-          03 T4 PIC X(55) VALUE
-          "FAXULDADE  IGREJA     BAIRRO     BAR        ACADEMIA   ".
-          03 T5 PIC X(56) VALUE
-          "COLEGIO    SHOW       FAMILIA    NAMORADA(O)".
+           03 T4 PIC X(55) VALUE
+           "FAXULDADE  IGREJA     BAIRRO     BAR        ACADEMIA   ".
+           03 T5 PIC X(56) VALUE
+           "COLEGIO    SHOW       FAMILIA    NAMORADA(O)".
        01 TABAUX REDEFINES TABAMIGO.
            03 TAMIGO        PIC X(11) OCCURS 09 TIMES.
        01 ALFAAMIGO         PIC X(11).
 
            01 TABGENERO.
            03 T1 PIC X(36) VALUE
-           "MMASCULINO  FFEMININO   TTRANSGENERO         SSEM GENERO0 ".
+           "MMAS  FFEM TTRANS   SSEMGEN".
            03 T2 PIC X(36) VALUE
-           "AWWWWWWWWWWWBDDDDDDDDDDDCHHHHHHHHHHHDTTTTTTTTTTTELLLLLLLLL".
+           "AWWW".
        01 TABGEN REDEFINES TABGENERO.
            03 TGEN        PIC X(11) OCCURS 10 TIMES.
        01 ALFAGN.
@@ -92,8 +92,9 @@
                       MOVE "ERRO NA ABERTURA DO ARQ CADAMIGO" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO ROT-FIM
-                ELSE
-                    NEXT SENTENCE.
+                   ELSE
+                      GO TO INC-001
+      *               NEXT SENTENCE.
        INC-001.
       *          DISPLAY (01, 01) ERASE.
                 DISPLAY "CADASTRO DE AMIGOS" AT 0120
