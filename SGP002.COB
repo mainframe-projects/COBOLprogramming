@@ -26,13 +26,13 @@
        FD CADPRO.
 
        01 REGPRO.
-               03 CODIGO       PIC 9(08).
-               03 DENOMINACAO        PIC X(30).
-               03 UNIDADE            PIC X(12).
-               03 PRECOCUSTO            PIC 9(06).
-               03 PRECOVENDA            PIC 9(06).
-               03 TIPOPRODUTO           PIC 9(15).
-               03 SITUACAO               PIC X(12).
+               03 CODIGO                       PIC 9(08).
+               03 DENOMINACAO                  PIC X(30).
+               03 UNIDADE                      PIC X(12).
+               03 PRECOCUSTO                   PIC 9(06).
+               03 PRECOVENDA                   PIC 9(06).
+               03 TIPOPRODUTO                  PIC 9(15).
+               03 SITUACAO                     PIC X(12).
 
       *        TODOS OS CAMPOS CONSISTIDOS (NÃO PODE ZEROS OU BRANCOS)
        WORKING-STORAGE SECTION.

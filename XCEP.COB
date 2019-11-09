@@ -31,9 +31,9 @@
               05 OCC00101      PIC 9(08).
            03 LOGR.
               05 OCC00102      PIC X(40).
-	   03 BAIRRO           PIC X(20).
-           03 UF 	       PIC X(02).
-	   03 UFEXTENSO        PIC X(20).
+       03 BAIRRO           PIC X(20).
+           03 UF            PIC X(02).
+       03 UFEXTENSO        PIC X(20).
            03 FILLER           PIC X(21).
       *
       *-----------------------------------------------------------------
@@ -47,6 +47,7 @@
        01 LIMPA        PIC X(55) VALUE SPACES.
        01 SOLIC        PIC X(20) VALUE SPACES.
        01 W-CADCEP     PIC X(40) VALUE "CADCEP.DAT                    ".
+       01 LIN          PIC 9(03) VALUE 001.
        01 CONLIN       PIC 9(03) VALUE 001.
        01 OCW03801     PIC 9(08) VALUE ZEROS.
        01 OCW03802     PIC X(40) VALUE SPACES.
@@ -95,17 +96,17 @@
        01  OCT038.
            05  BLANK SCREEN.
            05  LINE 01  COLUMN 01
-               VALUE  "ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ".
+               VALUE  "-----------------------------------------".
            05  LINE 01  COLUMN 41
-               VALUE  "ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»".
+               VALUE  "-----------------------------------------".
            05  LINE 02  COLUMN 01
                VALUE  "º                      *** CONSULTA DE C".
            05  LINE 02  COLUMN 41
                VALUE  "EP ***                                 º".
            05  LINE 03  COLUMN 01
-               VALUE  "ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ".
+               VALUE  "-----------------------------------------".
            05  LINE 03  COLUMN 41
-               VALUE  "ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¶".
+               VALUE  "-----------------------------------------".
            05  LINE 04  COLUMN 01
                VALUE  "º               CEP                   LO".
            05  LINE 04  COLUMN 41
@@ -179,17 +180,17 @@
            05  LINE 21  COLUMN 41
                VALUE  "                                       º".
            05  LINE 22  COLUMN 01
-               VALUE  "ÇÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ".
+               VALUE  "-----------------------------------------".
            05  LINE 22  COLUMN 41
-               VALUE  "ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄ¶".
+               VALUE  "-----------------------------------------".
            05  LINE 23  COLUMN 01
                VALUE  "ºMENSAGEM :".
            05  LINE 23  COLUMN 41
                VALUE  "                              ³ OCP038 º".
            05  LINE 24  COLUMN 01
-               VALUE  "ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ".
+               VALUE  "-----------------------------------------".
            05  LINE 24  COLUMN 41
-               VALUE  "ÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍŒ".
+               VALUE  "-----------------------------------------".
            05  T-EMPRESA
                LINE 02  COLUMN 02  PIC X(20)
                USING  W-EMPRESA
@@ -227,14 +228,17 @@
                  MOVE "ERRO NA ABERTURA DO ARQUIVO  " TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO ROT-FIM2
-           ELSE
-               NEXT SENTENCE.
+              ELSE
+                 GO TO INC-001
+      *         NEXT SENTENCE.
       *
        INC-001.
            DISPLAY  OCT038.
+               GO TO INC-001A.
        INC-001A.
-           DISPLAY (23, 13)
+           DISPLAY
             "SOLIC.=> F1=ENCERRA CONSULTA   F2=CONSULTA P/LOGR."
+            AT 2313.
            ACCEPT OCT03801
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 02
@@ -253,8 +257,9 @@
                  GO TO INC-001.
            GO TO INC-RD2.
        INC-001B.
-           DISPLAY (23, 13)
+           DISPLAY
             "SOLIC.=> F1=ENCERRA CONSULTA     F2=CONSULTA P/CEP "
+            AT 2313
            ACCEPT OCT03802
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 02
@@ -272,7 +277,7 @@
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO INC-001B.
        INC-RD2.
-           DISPLAY (23, 13) LIMPA
+           DISPLAY LIMPA AT 2313
            READ CADCEP NEXT
            IF ST-ERRO NOT = "00"
               IF ST-ERRO = "10"
@@ -289,15 +294,16 @@
            MOVE OCC00101 TO DET21
            MOVE OCC00102 TO DET22
            COMPUTE LIN = CONLIN + 5
-           DISPLAY (LIN, 02) DET2
+      *    DISPLAY (LIN, 02) DET2 AT 02       VERSÃO ORIGINAL
+           DISPLAY LIN AT 02 DET2
            ADD 1 TO CONLIN
            IF CONLIN < 17
                   GO TO INC-RD2.
       *
        ROT-SOL.
-           DISPLAY (23, 13) " *** CONTINUA CONSULTA : . ***"
+           DISPLAY " *** CONTINUA CONSULTA : . ***" AT 2313
            MOVE "S" TO W-OPCAO
-           ACCEPT  (23, 38) W-OPCAO  WITH UPDATE
+           ACCEPT W-OPCAO WITH UPDATE           AT 2338
            IF W-OPCAO = "S"
                   MOVE 01 TO CONLIN
                   DISPLAY OCT038
@@ -310,9 +316,9 @@
            GO TO INC-001.
       *
        NOV-SOL.
-           DISPLAY (23, 13) " *** NOVA CONSULTA : . ***"
+           DISPLAY " *** NOVA CONSULTA : . ***" AT 2313
            MOVE "S" TO W-OPCAO
-           ACCEPT  (23, 34) W-OPCAO WITH UPDATE
+           ACCEPT W-OPCAO WITH UPDATE AT 2334
            IF W-OPCAO = "S"
                   MOVE 01 TO CONLIN
                   MOVE ZEROS  TO OCW03801
@@ -328,7 +334,7 @@
       **********************
       *
        ROT-FIM.
-           DISPLAY (01 01) ERASE.
+           DISPLAY ERASE AT 0101.
            CLOSE CADCEP.
        ROT-FIM2.
            EXIT PROGRAM.
@@ -342,13 +348,13 @@
        ROT-MENS.
            MOVE ZEROS TO W-CONT.
        ROT-MENS1.
-           DISPLAY (23, 13) MENS.
+           DISPLAY MENS AT 2313.
        ROT-MENS2.
            ADD 1 TO W-CONT
            IF W-CONT < 1000
               GO TO ROT-MENS2
            ELSE
-              DISPLAY (23, 12) LIMPA.
+              DISPLAY LIMPA AT 2312.
        ROT-MENS-FIM.
            EXIT.
        FIM-ROT-MENS.
