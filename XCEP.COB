@@ -207,7 +207,6 @@
                LINE 06  COLUMN 25  PIC X(40)
                USING  OCW03802.
       *-----------------------------------------------------------------
-
        PROCEDURE DIVISION.
        INICIO.
       *
