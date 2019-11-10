@@ -1,13 +1,14 @@
       ******************************************************************
-      * Author: LÁZARO V.A. SANTOS
-      * Date: 28-09-2019
-      * Purpose: Cadastro de Cliente
-      * Tectonics: COB
+      * Author: LÁZARO VINICIUS A. SANTOS
+      * Date: 09/11/2019
+      * Purpose: SISTEMA CADASTRO DE PEDIDO
+      * Tectonics: cobc
       ******************************************************************
-       IDENTIFICATION DIVISION.
-       PROGRAM-ID. SGP003.
+              IDENTIFICATION DIVISION.
+       PROGRAM-ID. SGP006.
+
       **************************************
-      * MANUTENCAO DO CADASTRO DE CLIENTE  *
+      * MANUTENCAO DO CADASTRO DE PRODUTO  *
       **************************************
       *----------------------------------------------------------------
        ENVIRONMENT DIVISION.
@@ -16,36 +17,32 @@
                          DECIMAL-POINT IS COMMA.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-       SELECT CADCLIENTE ASSIGN TO DISK
+       SELECT CADPED ASSIGN TO DISK
                     ORGANIZATION IS INDEXED
                     ACCESS MODE  IS DYNAMIC
-                    RECORD KEY   IS REGCLI
+                    RECORD KEY   IS NOMECLIENTE
                     FILE STATUS  IS ST-ERRO
-                    ALTERNATE RECORD KEY IS NOME
+                    ALTERNATE RECORD KEY IS PRODUTO
                                                       WITH DUPLICATES.
       *
       *-----------------------------------------------------------------
        DATA DIVISION.
        FILE SECTION.
-       FD CADCLIENTE
-      *         LABEL RECORD IS STANDARD
-               VALUE OF FILE-ID IS "CADCLIENTE.DAT".
-       01 REGCLI.
-                03 CPF               PIC X(12).
-                03 NOME              PIC X(40).
-                03 RG                PIC X(15).
-                03 ESTADOCIVIL       PIC X(12).
-                03 CEP               PIC 9(1).
-                03 LOGRADOURO        PIC X(40).
-                03 COMPLE            PIC X(10).
-                03 TELEFONE          PIC 9(9).
-                03 NUM               PIC X(13).
-                03 BAIRRO            PIC X(25).
-                03 CIDADE            PIC X(25).
-                03 UF                PIC X(2).
-                03 EMAIL             PIC X(40).
-                03 SITUACAO          PIC X(20).
-      *
+       FD CADPED
+               LABEL RECORD IS STANDARD
+               VALUE OF FILE-ID IS "CADPED.DAT".
+       01 ARQPED.
+                03 PEDIDO             PIC 9(05).
+                03 CLIENTE.
+                       04 NOMECLIENTE PIC X(05).
+                       04 CPF         PIC X(11).
+                03 PRODUTO              PIC X(30).
+                03 UNIDADE              PIC X(10).
+                03 PRECOVENDA           PIC X(10).
+                03 QUANTIDADE           PIC X(05).
+                03 VALORPEDIDO          PIC X(10).
+
+                03 CALCPRECO             PIC X(10) VALUE ZEROS.
       *-----------------------------------------------------------------
        WORKING-STORAGE SECTION.
        77 W-SEL        PIC 9(01) VALUE ZEROS.
@@ -56,138 +53,130 @@
        77 MENS         PIC X(50) VALUE SPACES.
        77 LIMPA        PIC X(50) VALUE SPACES.
 
-       01 TABAMIGO.
-           03 T4 PIC X(55) VALUE
-           "FAXULDADE  IGREJA     BAIRRO     BAR        ACADEMIA   ".
-           03 T5 PIC X(56) VALUE
-           "COLEGIO    SHOW       FAMILIA    NAMORADA(O)".
-       01 TABAUX REDEFINES TABAMIGO.
-           03 TAMIGO        PIC X(11) OCCURS 09 TIMES.
-       01 ALFAAMIGO         PIC X(11).
 
-           01 TABGENERO.
-           03 T1 PIC X(36) VALUE
-           "MMAS  FFEM TTRANS   SSEMGEN".
-           03 T2 PIC X(36) VALUE
-           "AWWW".
-       01 TABGEN REDEFINES TABGENERO.
-           03 TGEN        PIC X(11) OCCURS 10 TIMES.
-       01 ALFAGN.
-             03 ALFAGN1 PIC X(01).
-             03 ALFAGN2 PIC X(11).
+       SCREEN SECTION.
+
+       01 TELA.
+           03 BLANK SCREEN.
+
+           03 LINE 01 COLUMN 20 "CADASTRO DE PEDIDOS"
+           03 LINE 02 COLUMN 20 "PEDIDO             "
+           03 LINE 03 COLUMN 20 "CLIENTE NOME       "
+           03 LINE 04 COLUMN 20 "CPF                "
+           03 LINE 05 COLUMN 20 "PRODUTO            "
+           03 LINE 06 COLUMN 20 "UNIDADE            "
+           03 LINE 07 COLUMN 20 "PRECOVENDA         "
+           03 LINE 08 COLUMN 20 "QUANTIDADE         "
+           03 LINE 09 COLUMN 20 "VALOR DO PEDIDO    "
+
+
+
       *-----------------------------------------------------------------
        PROCEDURE DIVISION.
        INICIO.
       *
        INC-000.
-           OPEN I-O CADCLIENTE
+           OPEN I-O CADPED
            IF ST-ERRO NOT = "00"
                IF ST-ERRO = "30"
-                      OPEN OUTPUT CADCLIENTE
-                      CLOSE CADCLIENTE
-                      MOVE "*** ARQUIVO CADAMIGO FOI CRIADO **" TO MENS
+                      OPEN OUTPUT CADPED
+                      CLOSE CADPED
+                      MOVE "*** ARQUIVO CADPED FOI CRIADO **" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO INC-000
                    ELSE
-                      MOVE "ERRO NA ABERTURA DO ARQ CADAMIGO" TO MENS
+                      MOVE "ERRO NA ABERTURA DO ARQ CADPED" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO ROT-FIM
-                   ELSE
-                      GO TO INC-001.
-      *               NEXT SENTENCE.
+                ELSE
+                    GO TO INC-001.
+      *                 NEXT SENTENCE.
        INC-001.
-      *          DISPLAY (01, 01) ERASE.
-                DISPLAY "CADASTRO DE AMIGOS" AT 0120
-                DISPLAY "APELIDO            : " AT 0401
-                DISPLAY "NOME               : " AT 0501
-                DISPLAY "EMAIL              : " AT 0601
-                DISPLAY "DATA DE NASCIMENTO : " AT 0701
-                DISPLAY "TIPO DE AMIGO      : " AT 0801
-                DISPLAY "SEXO               : " AT 0901
-                DISPLAY "GENERO AMIGO       : " AT 1001
-                DISPLAY "TELEFONE           : " AT 1101.
+                DISPLAY TELA.
+
 
 
        INC-002.
-                ACCEPT CADCLIENTE AT 0421.
-      *          ACCEPT W-ACT FROM ESCAPE KEY.
+                ACCEPT  (04, 21) NOMECLIENTE
+                ACCEPT W-ACT FROM ESCAPE KEY
                  IF W-ACT = 02
-                   CLOSE CADCLIENTE
+                   CLOSE CADPED
                    GO TO ROT-FIM.
-                IF CADCLIENTE = " "
+                IF NOMECLIENTE  = " "
                    MOVE "*** NOME INVALIDO ***" TO MENS
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO INC-002.
        LER-PRODUTO01.
                 MOVE 0 TO W-SEL
-                READ CADAMIGO
+                READ CADPED
                 IF ST-ERRO NOT = "23"
                    IF ST-ERRO = "00"
-                      DISPLAY (05, 21) NOME
-                      DISPLAY (06, 21) EMAIL
-                      DISPLAY (07, 21) DATA-NASC
-                      DISPLAY (08, 21) TIPO-AMIGO
-                      DISPLAY (09, 21) SEXO
-                      DISPLAY (10, 21) GENERO
-                      DISPLAY (11, 21) TELEFONE
-                      MOVE "*** NOME JA CADASTRADO ***" TO MENS
+                      DISPLAY (05, 21) PEDIDO
+                      DISPLAY (06, 21) NOMECLIENTE
+					               DISPLAY (07, 21) CPF
+				                 DISPLAY (08, 21) PRODUTO
+				                 DISPLAY (09, 21) UNIDADE
+				                 DISPLAY (10, 21) PRECOVENDA
+				                 DISPLAY (11, 21) QUANTIDADE
+                      DISPLAY (12, 21) VALORPEDIDO
+                      MOVE "*** PEDIDO JA CADASTRADO ***" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       MOVE 1 TO W-SEL
                       GO TO ACE-001
                    ELSE
-                      MOVE "ERRO NA LEITURA ARQUIVO CADAMIGO"   TO MENS
+                      MOVE "ERRO NA LEITURA ARQUIVO CADPED"   TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO ROT-FIM
                 ELSE
                    NEXT SENTENCE.
        INC-003.
-                ACCEPT (05, 21) NOME
+                ACCEPT (05, 21) NOMECLIENTE
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-002.
        INC-004.
-                ACCEPT (06, 21) EMAIL
+                ACCEPT (06, 21) PEDIDO
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-003.
 
-       INC-005.
-                ACCEPT (06, 21) DATA-NASC
+	      INC-005.
+                ACCEPT (06, 21) CPF
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-004.
-       INC-006.
-                ACCEPT (06, 21) TIPO-AMIGO
+	      INC-006.
+                ACCEPT (06, 21) PRODUTO
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-005.
-                IF TIPO-AMIGO = 0 OU TIPO-AMIGO > 9
-                 MOVE "TIPO DE AMIGO INVALIDO" TO MENS
-                 PEFORM ROT-MENS TO ROT-MENS-FIM
-                 GO TO INC-006.
-                 MOVE TAMIGO(TIPO-AMIGO) TO ALFAAMIGO
-                 DISPLAY (LL CC) ALFAAMIGO.
-       INC-007.
-                ACCEPT (06, 21) SEXO
+	      INC-007.
+                ACCEPT (06, 21) UNIDADE
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-006.
-       INC-008.
-                ACCEPT (06, 21) GENERO
+	      INC-008.
+                ACCEPT (06, 21) PRECOVENDA
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-007.
-                MOVE 1 TO IND.
+			         MOVE 1 TO IND.
        INC-008A.
-                MOVE TABGEN(IND) TO ALFAGN
-                IF ALFAGN1 NOT = GENERO
-                   ADD 1 TO IND
-                     IF IND > 10
-                       MOVE "*** GENERO NAO ENCONTRADO ***" TO MENS
+                MOVE TABGEN(IND) TO QUANTIDADE
+			       	IF ALFAGN1 NOT = GENERO
+				       ADD 1 TO IND
+				        IF IND > 10
+		               MOVE "*** GENERO NAO ENCONTRADO ***" TO MENS
                        PERFORM ROT-MENS THRU ROT-MENS-FIM
                        GO TO INC-008
                      ELSE
-                       GO TO INC=008A
-                ELSE
-                     DISPLAY (LL CC) ALFAGN2
-       INC-009.
+				       GO TO INC=008A
+		          ELSE
+				       DISPLAY (LL CC) ALFAGN2
+	      INC-009.
                 ACCEPT (06, 21) TELEFONE
                 ACCEPT W-ACT FROM ESCAPE KEY
                 IF W-ACT = 02 GO TO INC-008.
+       INC-010.
+               ACCEPT (06,21) QUANTIDADE
+               ACCEPT W-ACT FROM ESCAPE KEY
+               ADD PRECOVENDA TO QUANTIDADE
+               GO TO INC-001.
+
        INC-OPC.
                 MOVE "S" TO W-OPCAO
                 DISPLAY (23, 40) "DADOS OK (S/N) : ".
@@ -203,7 +192,7 @@
                    PERFORM ROT-MENS THRU ROT-MENS-FIM
                    GO TO INC-OPC.
        INC-WR1.
-                WRITE REGAMIGO
+                WRITE REGPED
                 IF ST-ERRO = "00" OR "02"
                       MOVE "*** DADOS GRAVADOS *** " TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
@@ -213,7 +202,7 @@
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO INC-001
                 ELSE
-                      MOVE "ERRO NA GRAVACAO DO ARQUIVO DE CADAMIGO"
+                      MOVE "ERRO NA GRAVACAO DO ARQUIVO DE CADPED"
                                                        TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO ROT-FIM.

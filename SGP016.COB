@@ -1,10 +1,15 @@
-       IDENTIFICATION DIVISION.
-       PROGRAM-ID. OCP038.
-      *******************
-      * CONSULTA DE CEP *
-      *******************
+      ******************************************************************
+      * Author: LÁZARO VINICIUS A. SANTOS
+      * Date: 09/11/2019
+      * Purpose: CONSULTA POR PEDIDO CLIENTE / PRODUTO
+      * Tectonics: cobc
+      ******************************************************************
+              IDENTIFICATION DIVISION.
+       PROGRAM-ID. SGP016.
+      *******************************
+      * CONSULTA DE DEPARTAMENTO    *
+      *******************************
       *----------------------------------------------------------------
-
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
        SPECIAL-NAMES.
@@ -12,30 +17,26 @@
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
       *
-           SELECT CADCEP   ASSIGN TO DISK
+           SELECT ARQDEPTO ASSIGN TO DISK
                ORGANIZATION IS INDEXED
                ACCESS MODE  IS DYNAMIC
-               RECORD KEY   IS CEP
+               RECORD KEY   IS DEPTO-CODIGO
                FILE STATUS  IS ST-ERRO
-               ALTERNATE RECORD KEY IS LOGR WITH DUPLICATES.
+               ALTERNATE RECORD KEY IS DEPTO-DENOM WITH DUPLICATES.
       *
       *-----------------------------------------------------------------
        DATA DIVISION.
        FILE SECTION.
       *
-       FD CADCEP
-      *        LABEL RECORD IS STANDARD
-              VALUE OF FILE-ID IS W-CADCEP.
-       01 OCR001.
-           03 CEP.
-              05 OCC00101      PIC 9(08).
-           03 LOGR.
-              05 OCC00102      PIC X(40).
-       03 BAIRRO           PIC X(20).
-           03 UF            PIC X(02).
-       03 UFEXTENSO        PIC X(20).
-           03 FILLER           PIC X(21).
       *
+       FD ARQDEPTO
+      *        LABEL RECORD IS STANDARD
+              VALUE OF FILE-ID IS "ARQDEPTO.DAT".
+       01 REGDEPTO.
+           03 DEPTO-CODIGO     PIC 9(03).
+           03 DEPTO-DENOM      PIC X(15).
+           03 DEPTO-DIRET      PIC 9(01).
+           03 DEPTO-SITUACAO   PIC X(01).
       *-----------------------------------------------------------------
        WORKING-STORAGE SECTION.
        01 W-SEL        PIC 9(01) VALUE ZEROS.
@@ -46,11 +47,10 @@
        01 MENS         PIC X(50) VALUE SPACES.
        01 LIMPA        PIC X(55) VALUE SPACES.
        01 SOLIC        PIC X(20) VALUE SPACES.
-       01 W-CADCEP     PIC X(40) VALUE "CADCEP.DAT                    ".
-       01 LIN          PIC 9(03) VALUE 001.
        01 CONLIN       PIC 9(03) VALUE 001.
-       01 OCW03801     PIC 9(08) VALUE ZEROS.
-       01 OCW03802     PIC X(40) VALUE SPACES.
+       01 LIN          PIC 9(20) VALUE ZEROS.
+       01 OCW03801     PIC 9(06) VALUE ZEROS.
+       01 OCW03802     PIC X(35) VALUE SPACES.
        01 OCW03803     PIC X(12) VALUE SPACES.
        01 OCW03810     PIC 9(15) VALUE ZEROS.
        01 W-EMPRESA    PIC X(20) VALUE "FATEC ZL".
@@ -83,10 +83,10 @@
       ******************
       *
        01 DET2.
-          03 FILLER    PIC X(11) VALUE SPACES.
-          03 DET21     PIC 99999.999.
+          03 FILLER    PIC X(16) VALUE SPACES.
+          03 DET21     PIC 9(03) VALUE ZEROS.
           03 FILLER    PIC X(04) VALUE SPACES.
-          03 DET22     PIC X(40) VALUE SPACES.
+          03 DET22     PIC X(15) VALUE SPACES.
       *
       ******************
       * ROTINA DE TELA *
@@ -96,23 +96,23 @@
        01  OCT038.
            05  BLANK SCREEN.
            05  LINE 01  COLUMN 01
-               VALUE  "-----------------------------------------".
+               VALUE  "----------------------------------------".
            05  LINE 01  COLUMN 41
-               VALUE  "-----------------------------------------".
+               VALUE  "----------------------------------------".
            05  LINE 02  COLUMN 01
-               VALUE  "º                      *** CONSULTA DE C".
+               VALUE  "º                      *** CONSULTA DE P".
            05  LINE 02  COLUMN 41
-               VALUE  "EP ***                                 º".
+               VALUE  "EDIDO            ***                   º".
            05  LINE 03  COLUMN 01
-               VALUE  "-----------------------------------------".
+               VALUE  "----------------------------------------".
            05  LINE 03  COLUMN 41
-               VALUE  "-----------------------------------------".
+               VALUE  "----------------------------------------".
            05  LINE 04  COLUMN 01
-               VALUE  "º               CEP                   LO".
+               VALUE  "º              CODIGO                 DE".
            05  LINE 04  COLUMN 41
-               VALUE  "GRADOURO                               º".
+               VALUE  "PEDIDO                                 º".
            05  LINE 05  COLUMN 01
-               VALUE  "º            ---------  ----------------".
+               VALUE  "º              ------   ----------------".
            05  LINE 05  COLUMN 41
                VALUE  "------------------------               º".
            05  LINE 06  COLUMN 01
@@ -180,17 +180,17 @@
            05  LINE 21  COLUMN 41
                VALUE  "                                       º".
            05  LINE 22  COLUMN 01
-               VALUE  "-----------------------------------------".
+               VALUE  "----------------------------------------".
            05  LINE 22  COLUMN 41
-               VALUE  "-----------------------------------------".
+               VALUE  "----------------------------------------".
            05  LINE 23  COLUMN 01
                VALUE  "ºMENSAGEM :".
            05  LINE 23  COLUMN 41
                VALUE  "                              ³ OCP038 º".
            05  LINE 24  COLUMN 01
-               VALUE  "-----------------------------------------".
+               VALUE  "----------------------------------------".
            05  LINE 24  COLUMN 41
-               VALUE  "-----------------------------------------".
+               VALUE  "----------------------------------------".
            05  T-EMPRESA
                LINE 02  COLUMN 02  PIC X(20)
                USING  W-EMPRESA
@@ -201,11 +201,11 @@
                HIGHLIGHT.
        01 OCT038T.
            05  OCT03801
-               LINE 06  COLUMN 13  PIC ZZZZZ.ZZZ
-               USING  OCW03801.
+               LINE 06  COLUMN 18  PIC 9(03)
+               USING  DEPTO-CODIGO.
            05  OCT03802
-               LINE 06  COLUMN 25  PIC X(40)
-               USING  OCW03802.
+               LINE 06  COLUMN 25  PIC X(15)
+               USING  DEPTO-DENOM.
       *-----------------------------------------------------------------
        PROCEDURE DIVISION.
        INICIO.
@@ -217,31 +217,30 @@
            PERFORM INVNOR.
            MOVE DATA-N TO DATA-EQ.
        INC-OP1.
-           OPEN INPUT CADCEP
+           OPEN I-O   ARQDEPTO
            IF ST-ERRO NOT = "00"
               IF ST-ERRO = "30"
-                 MOVE "ARQUIVO DE CENTROS DE CUSTOS NAO EXISTE" TO MENS
+                 MOVE "ARQUIVO DE DEPARTAMENTO" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO ROT-FIM2
               ELSE
                  MOVE "ERRO NA ABERTURA DO ARQUIVO  " TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO ROT-FIM2
-              ELSE
-                 GO TO INC-001
+           ELSE
+               GO TO INC-001.
       *         NEXT SENTENCE.
       *
        INC-001.
            DISPLAY  OCT038.
-               GO TO INC-001A.
        INC-001A.
            DISPLAY
-            "SOLIC.=> F1=ENCERRA CONSULTA   F2=CONSULTA P/LOGR."
-            AT 2313.
+            "SOLIC.=> F1=ENCERRA CONSULTA   F2=CONSULTA P/DENOMIN."
+            AT 2313
            ACCEPT OCT03801
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 02
-                      CLOSE CADCEP
+                      CLOSE ARQDEPTO
                       GO TO ROT-FIM.
            IF W-ACT = 03
                       GO TO INC-001B.
@@ -249,20 +248,19 @@
                       MOVE "*** FUNCAO NAO DEFINIDA ***" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO INC-001A.
-           MOVE OCW03801 TO OCC00101
-           START CADCEP KEY IS NOT LESS CEP INVALID KEY
+           START ARQDEPTO KEY IS NOT LESS DEPTO-CODIGO INVALID KEY
                  MOVE "*** FIM DE PROCESSAMENTO ***" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO INC-001.
            GO TO INC-RD2.
        INC-001B.
            DISPLAY
-            "SOLIC.=> F1=ENCERRA CONSULTA     F2=CONSULTA P/CEP "
+            "SOLIC.=> F1=ENCERRA CONSULTA     F2=CONSULTA P/CODIGO "
             AT 2313
            ACCEPT OCT03802
            ACCEPT W-ACT FROM ESCAPE KEY
            IF W-ACT = 02
-                      CLOSE CADCEP
+                      CLOSE ARQDEPTO
                       GO TO ROT-FIM.
            IF W-ACT = 03
                       GO TO INC-001A.
@@ -270,39 +268,40 @@
                       MOVE "*** FUNCAO NAO DEFINIDA ***" TO MENS
                       PERFORM ROT-MENS THRU ROT-MENS-FIM
                       GO TO INC-001A.
-           MOVE OCW03802 TO OCC00102
-           START CADCEP KEY IS NOT LESS LOGR INVALID KEY
+           START ARQDEPTO KEY IS NOT LESS DEPTO-DENOM INVALID KEY
                  MOVE "*** FIM DE PROCESSAMENTO ***" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO INC-001B.
        INC-RD2.
            DISPLAY LIMPA AT 2313
-           READ CADCEP NEXT
+           READ ARQDEPTO NEXT
            IF ST-ERRO NOT = "00"
               IF ST-ERRO = "10"
                  MOVE "*** FIM DE PROCESSAMENTO ***" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO NOV-SOL
               ELSE
-                 MOVE ST-ERRO TO MENS
+                 MOVE "ERRO NA LEITURA DO ARQUIVO" TO MENS
                  PERFORM ROT-MENS THRU ROT-MENS-FIM
                  GO TO ROT-FIM
            ELSE
-              NEXT SENTENCE.
+               GO TO ROT-MONTAR.
+      *        NEXT SENTENCE.
        ROT-MONTAR.
-           MOVE OCC00101 TO DET21
-           MOVE OCC00102 TO DET22
+           DISPLAY (02, LIN) DEPTO-CODIGO
+           MOVE DEPTO-CODIGO TO DET21
+           MOVE DEPTO-DENOM  TO DET22
            COMPUTE LIN = CONLIN + 5
-      *    DISPLAY (LIN, 02) DET2 AT 02       VERSÃO ORIGINAL
-           DISPLAY LIN AT 02 DET2
+           DISPLAY (02, LIN) DET2
            ADD 1 TO CONLIN
            IF CONLIN < 17
                   GO TO INC-RD2.
       *
        ROT-SOL.
-           DISPLAY " *** CONTINUA CONSULTA : . ***" AT 2313
+           DISPLAY " *** CONTINUA CONSULTA : . ***"
+            AT 2313
            MOVE "S" TO W-OPCAO
-           ACCEPT W-OPCAO WITH UPDATE           AT 2338
+           ACCEPT W-OPCAO AT 2338 WITH UPDATE
            IF W-OPCAO = "S"
                   MOVE 01 TO CONLIN
                   DISPLAY OCT038
@@ -317,11 +316,11 @@
        NOV-SOL.
            DISPLAY " *** NOVA CONSULTA : . ***" AT 2313
            MOVE "S" TO W-OPCAO
-           ACCEPT W-OPCAO WITH UPDATE AT 2334
+           ACCEPT W-OPCAO AT 2334 WITH UPDATE
            IF W-OPCAO = "S"
                   MOVE 01 TO CONLIN
-                  MOVE ZEROS  TO OCW03801
-                  MOVE SPACES TO OCW03802
+                  MOVE ZEROS  TO DEPTO-CODIGO
+                  MOVE SPACES TO DEPTO-DENOM
                   GO TO INC-001.
            IF W-OPCAO NOT = "N"
                   MOVE "*** DIGITE S=SIM   N=NAO ***" TO MENS
@@ -333,8 +332,8 @@
       **********************
       *
        ROT-FIM.
-           DISPLAY ERASE AT 0101.
-           CLOSE CADCEP.
+           DISPLAY (01 01) ERASE.
+           CLOSE ARQDEPTO.
        ROT-FIM2.
            EXIT PROGRAM.
        ROT-FIM3.
